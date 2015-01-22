@@ -1,0 +1,3 @@
+#!/bin/bash
+docker rm xap
+docker run -i -e "TGRID_BUILD_NUMBER=${TGRID_BUILD_NUMBER}" -e "TGRID_GS_PRODUCT_VERSION=${TGRID_GS_PRODUCT_VERSION}" -e "TGRID_S3_PUBLISH_FOLDER=${TGRID_S3_PUBLISH_FOLDER}" -e "TGRID_MILESTONE=${TGRID_MILESTONE}" -e "TGRID_SUITE_CUSTOM_EXCLUDE=${TGRID_SUITE_CUSTOM_EXCLUDE}" -e "TGRID_SUITE_CUSTOM_INCLUDE=${TGRID_SUITE_CUSTOM_INCLUDE}" -e "TGRID_SUITE_CUSTOM_JVMARGS=${TGRID_SUITE_CUSTOM_JVMARGS}" -e "TGRID_SUITE_CUSTOM_SYSPROPS=${TGRID_SUITE_CUSTOM_SYSPROPS}" -e "TGRID_QA_SUITE_VERSION=${TGRID_QA_SUITE_VERSION}" -e "TGRID_TARGET_JVM=${TGRID_TARGET_JVM}" -v /home/xap/docker/sources:/sources -v /home/xap/docker/.ssh:/root/foo -v /home/xap/docker/counter.sh:/root/counter.sh -v /home/xap/docker/counter.tmp:/root/counter.tmp --name xap barakbo/xap 
