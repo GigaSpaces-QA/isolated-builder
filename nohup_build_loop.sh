@@ -1,2 +1,3 @@
 #!/bin/bash
-nohup ./build_loop.sh &> logs/loop.log &
+. env.sh
+nohup ./build_loop.sh &> ${LOGS_DIR}/loop.log &

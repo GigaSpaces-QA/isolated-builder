@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 COUNTER_FILE="counter.tmp"
 
 if [ ! -f $COUNTER_FILE ]; then

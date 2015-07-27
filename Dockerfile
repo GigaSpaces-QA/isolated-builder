@@ -43,13 +43,15 @@ RUN rm -f /tmp/apache-maven-3.0.5.tar.gz
 RUN sudo apt-get -y install git
 
 WORKDIR /tmp
-RUN wget --no-verbose -O /tmp/apache-ant-1.8.4-bin.tar.gz http://archive.apache.org/dist/ant/binaries/apache-ant-1.8.4-bin.tar.gz
+#RUN wget --no-verbose -O /tmp/apache-ant-1.8.4-bin.tar.gz http://archive.apache.org/dist/ant/binaries/apache-ant-1.8.4-bin.tar.gz
+RUN wget --no-verbose -O /tmp/apache-ant-1.9.3-bin.tar.gz http://archive.apache.org/dist/ant/binaries/apache-ant-1.9.3-bin.tar.gz
 
+#RUN tar -xzf /tmp/apache-ant-1.8.4-bin.tar.gz && \
+#  mv /tmp/apache-ant-1.8.4 /opt/apache-ant
+RUN tar -xzf /tmp/apache-ant-1.9.3-bin.tar.gz && \
+  mv /tmp/apache-ant-1.9.3 /opt/apache-ant
 
-RUN tar -xzf /tmp/apache-ant-1.8.4-bin.tar.gz && \
-  mv /tmp/apache-ant-1.8.4 /opt/apache-ant
-
-RUN rm -rf /tmp/apache-ant-1.8.4-bin.tar.gz
+RUN rm -rf /tmp/apache-ant-1.9.3-bin.tar.gz
 
 # install svn to checkout TFRepository
 RUN apt-get update && apt-get install -y subversion

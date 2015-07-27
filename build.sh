@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker  build -t="barakbo/xap" .
+docker  build -t="builder/xap" .
