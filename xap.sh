@@ -9,6 +9,11 @@ GIT_BRANCH=${GIT_BRANCH=''}
 mkdir -p -v ${SOURCES_DIR}/build_status
 
    function check_git_changes {
+   	local LOCAL_GIT_FOLDER=$1/.git
+	if [ ! -d $LOCAL_GIT_FOLDER ]
+	then
+    	git clone $3 $1
+    fi
     pushd $1
     if [ -z "$2" ] || [ "$2" == "master" ]
     then
@@ -55,15 +60,15 @@ then
   echo "Warning force flag is on - build will be created even though no changes were made in github"
 fi
 
-check_git_changes ${SOURCES_DIR}/xap ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/xap-jms ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/xap-cassandra ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/blobstore ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/xap-blobstore-mapdb ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/xap-jetty ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/xap-apm-introscope ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/xap-rest ${GIT_BRANCH}
-check_git_changes ${SOURCES_DIR}/rest-data ${GIT_BRANCH}
+check_git_changes ${SOURCES_DIR}/xap ${GIT_BRANCH} git@github.com:Gigaspaces/xap.git
+check_git_changes ${SOURCES_DIR}/xap-jms ${GIT_BRANCH} git@github.com:Gigaspaces/xap-jms.git
+check_git_changes ${SOURCES_DIR}/xap-cassandra ${GIT_BRANCH} git@github.com:Gigaspaces/xap-cassandra.git
+check_git_changes ${SOURCES_DIR}/blobstore ${GIT_BRANCH} git@github.com:Gigaspaces/blobstore.git
+check_git_changes ${SOURCES_DIR}/xap-blobstore-mapdb ${GIT_BRANCH} git@github.com:Gigaspaces/xap-blobstore-mapdb.git
+check_git_changes ${SOURCES_DIR}/xap-jetty ${GIT_BRANCH} git@github.com:Gigaspaces/xap-jetty.git
+check_git_changes ${SOURCES_DIR}/xap-apm-introscope ${GIT_BRANCH} git@github.com:Gigaspaces/xap-apm-introscope.git
+check_git_changes ${SOURCES_DIR}/xap-rest ${GIT_BRANCH} git@github.com:Gigaspaces/xap-rest.git
+check_git_changes ${SOURCES_DIR}/rest-data ${GIT_BRANCH} git@github.com:Gigaspaces/RESTData.git
 
 if [ "${SOURCES_CHANGED}" = false ]
 then 
