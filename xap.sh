@@ -69,6 +69,7 @@ check_git_changes ${SOURCES_DIR}/xap-jetty ${GIT_BRANCH} git@github.com:Gigaspac
 check_git_changes ${SOURCES_DIR}/xap-apm-introscope ${GIT_BRANCH} git@github.com:Gigaspaces/xap-apm-introscope.git
 check_git_changes ${SOURCES_DIR}/xap-rest ${GIT_BRANCH} git@github.com:Gigaspaces/xap-rest.git
 check_git_changes ${SOURCES_DIR}/rest-data ${GIT_BRANCH} git@github.com:Gigaspaces/RESTData.git
+check_git_changes ${SOURCES_DIR}/http-session ${GIT_BRANCH} git@github.com:Gigaspaces/xap-session-sharing-manager.git
 
 if [ "${SOURCES_CHANGED}" = false ]
 then 
@@ -172,6 +173,20 @@ cd ..
 rm -rf ${SOURCES_DIR}/sgtest-test-generator
 pushd
 
+#TODO clone branch
+echo "Installing HTTP Session & iTests"
+#pushd ${SOURCES_DIR}
+#cd http-session
+#mvn install -DskipTests
+#cd ..
+#git clone git@github.com:Gigaspaces/xap-session-sharing-manager-itests.git
+#cd xap-session-sharing-manager-itests
+#mvn test-compile -DskipTests -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
+#mkdir -p ${SOURCES_DIR}/http-session-tests-metadata
+#cp -f target/http-session-tests.json ${SOURCES_DIR}/http-session-tests-metadata
+#rm -rf ${SOURCES_DIR}/xap-session-sharing-manager-itests
+#popd
+
 pushd ${SOURCES_DIR}/SGTest
 mvn package -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
 mkdir -p ${SOURCES_DIR}/sgtest-jar
@@ -192,15 +207,3 @@ popd
 echo "Writing xap metadata"
 mkdir -p ${SOURCES_DIR}/metadata
 echo [ \"xap\":\"${SHA}\" ] > ${SOURCES_DIR}/metadata/metadata.txt
-
-#echo "Restoring git repositories sources"
-#(cd ${SOURCES_DIR}/xap && git checkout .)
-#(cd ${SOURCES_DIR}/blobstore && git checkout .)
-#(cd ${SOURCES_DIR}/xap-blobstore-mapdb && git checkout .)
-#(cd ${SOURCES_DIR}/xap-cassandra && git checkout .)
-#(cd ${SOURCES_DIR}/xap-jms && git checkout .)
-#(cd ${SOURCES_DIR}/xap-jetty && git checkout .)
-#(cd ${SOURCES_DIR}/xap-apm-introscope && git checkout .)
-#(cd ${SOURCES_DIR}/xap-rest && git checkout .)
-#(cd ${SOURCES_DIR}/rest-data && git checkout .)
-
