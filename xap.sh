@@ -3,13 +3,13 @@
 FORCE=${FORCE=false}
 SOURCES_CHANGED=false
 SOURCES_DIR='/sources'
-BUILD_PREFIX='12800-'
+BUILD_PREFIX='14700-'
 GIT_BRANCH=${GIT_BRANCH=''}
 
 mkdir -p -v ${SOURCES_DIR}/build_status
 
    function check_git_changes {
-   	local LOCAL_GIT_FOLDER=$1/.git
+    local LOCAL_GIT_FOLDER=$1/.git
 	if [ ! -d $LOCAL_GIT_FOLDER ]
 	then
     	git clone $3 $1
@@ -33,8 +33,8 @@ mkdir -p -v ${SOURCES_DIR}/build_status
        git branch --set-upstream $2 ${BRANCH}
     fi
     echo "BRANCH= ${BRANCH}"
-    git clean -fdx
     git checkout .
+    git clean -fdx
     local head=`git rev-parse HEAD`
     git fetch
     local origin=`git rev-parse ${BRANCH}`
@@ -70,6 +70,7 @@ check_git_changes ${SOURCES_DIR}/xap-apm-introscope ${GIT_BRANCH} git@github.com
 check_git_changes ${SOURCES_DIR}/xap-rest ${GIT_BRANCH} git@github.com:Gigaspaces/xap-rest.git
 check_git_changes ${SOURCES_DIR}/rest-data ${GIT_BRANCH} git@github.com:Gigaspaces/RESTData.git
 check_git_changes ${SOURCES_DIR}/http-session ${GIT_BRANCH} git@github.com:Gigaspaces/xap-session-sharing-manager.git
+check_git_changes ${SOURCES_DIR}/xap-session-sharing-manager-itests ${GIT_BRANCH} git@github.com:Gigaspaces/xap-session-sharing-manager-itests.git
 
 if [ "${SOURCES_CHANGED}" = false ]
 then 
@@ -121,10 +122,12 @@ mkdir -p ${SOURCES_DIR}/mule/mule-latest/target
 cp /opt/empty.zip ${SOURCES_DIR}/mule/mule-latest/target/mule-os-package.zip
 
 mkdir -p ${SOURCES_DIR}/examples
+#cp /opt/empty_build.xml ${SOURCES_DIR}/examples/build.xml
 
 mkdir -p ${SOURCES_DIR}/examples/release
+#cp /opt/empty.zip ${SOURCES_DIR}/examples/release/examples.zip
 
-#build examples
+#TODO add branch
 pushd ${SOURCES_DIR}/examples
 mkdir examples
 git clone git@github.com:Gigaspaces/xap-example-data.git
@@ -165,32 +168,16 @@ fi
 mkdir -p -v ${SOURCES_DIR}/build_status
 echo ${BUILD_STATUS} > ${SOURCES_DIR}/build_status/stat
 
-pushd ${SOURCES_DIR}
-git clone https://github.com/kobikis/sgtest-test-generator.git
-cd sgtest-test-generator
-mvn install -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
-cd ..
-rm -rf ${SOURCES_DIR}/sgtest-test-generator
-pushd
+mkdir -p ${SOURCES_DIR}/http-session-tests-metadata
+cp -f ${SOURCES_DIR}/xap-session-sharing-manager-itests/sys-tests/target/http-session-tests.json ${SOURCES_DIR}/http-session-tests-metadata
 
-#TODO clone branch
-echo "Installing HTTP Session & iTests"
-#pushd ${SOURCES_DIR}
-#cd http-session
-#mvn install -DskipTests
-#cd ..
-#git clone git@github.com:Gigaspaces/xap-session-sharing-manager-itests.git
-#cd xap-session-sharing-manager-itests
-#mvn test-compile -DskipTests -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
-#mkdir -p ${SOURCES_DIR}/http-session-tests-metadata
-#cp -f target/http-session-tests.json ${SOURCES_DIR}/http-session-tests-metadata
-#rm -rf ${SOURCES_DIR}/xap-session-sharing-manager-itests
-#popd
+mkdir -p ${SOURCES_DIR}/tgrid-tests-metadata
+cp -f ${SOURCES_DIR}/xap/tests/target/tgrid-tests-metadata.json ${SOURCES_DIR}/tgrid-tests-metadata/tgrid-tests-metadata.json
 
 pushd ${SOURCES_DIR}/SGTest
-mvn package -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
-mkdir -p ${SOURCES_DIR}/sgtest-jar
-cp -f target/SGTest*.jar ${SOURCES_DIR}/sgtest-jar
+mvn compile -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
+mkdir -p ${SOURCES_DIR}/sgtest-metadata
+cp -f target/sgtest-tests.json ${SOURCES_DIR}/sgtest-metadata
 popd
 
 echo "Clean temporary TFRepository & SGTest"
