@@ -71,6 +71,8 @@ check_git_changes ${SOURCES_DIR}/xap-rest ${GIT_BRANCH} git@github.com:Gigaspace
 check_git_changes ${SOURCES_DIR}/rest-data ${GIT_BRANCH} git@github.com:Gigaspaces/RESTData.git
 check_git_changes ${SOURCES_DIR}/http-session ${GIT_BRANCH} git@github.com:Gigaspaces/xap-session-sharing-manager.git
 check_git_changes ${SOURCES_DIR}/xap-session-sharing-manager-itests ${GIT_BRANCH} git@github.com:Gigaspaces/xap-session-sharing-manager-itests.git
+check_git_changes ${SOURCES_DIR}/mongo-datasource ${GIT_BRANCH} git@github.com:Gigaspaces/mongo-datasource.git
+check_git_changes ${SOURCES_DIR}/mongo-datasource-itests ${GIT_BRANCH} git@github.com:Gigaspaces/mongo-datasource-itests.git
 
 if [ "${SOURCES_CHANGED}" = false ]
 then 
@@ -173,6 +175,9 @@ cp -f ${SOURCES_DIR}/xap-session-sharing-manager-itests/sys-tests/target/http-se
 
 mkdir -p ${SOURCES_DIR}/tgrid-tests-metadata
 cp -f ${SOURCES_DIR}/xap/tests/target/tgrid-tests-metadata.json ${SOURCES_DIR}/tgrid-tests-metadata/tgrid-tests-metadata.json
+
+mkdir -p ${SOURCES_DIR}/mongodb-tests-metadata
+cp -f ${SOURCES_DIR}/mongo-datasource-itests/itests/target/mongodb-tests.json ${SOURCES_DIR}/mongodb-tests-metadata/mongodb-tests.json
 
 pushd ${SOURCES_DIR}/SGTest
 mvn compile -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local

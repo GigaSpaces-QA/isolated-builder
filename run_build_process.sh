@@ -58,6 +58,7 @@ cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build
 cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build
 cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build
 cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build
 
 unzip testsuite-1.5.zip
 unzip ${GS_ZIP_FILE_LOCAL}
