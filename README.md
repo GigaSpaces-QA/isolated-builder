@@ -10,7 +10,7 @@ The builder is located in `/home/xap/docker/`, build logs are located in: `/home
 
 All environment varialbes are located in `/home/xap/docker/env.sh`.
 
-Branch list is located in `/home/xap/docker/branch_list.txt` and can be modified in order to trigger build on a specific build.
+Branch list is located in `/home/xap/docker/branch_list.txt` and can be modified in order to trigger build on a specific branch (list seperated by comma).
 
 The build process is executed inside a docker container, the file is located in `/home/xap/docker/Dockerfile`.
 The folder `/home/xap/docker/ssh` MUST contain valid ssh keys of an authorized github user that can access private XAP repositories.
@@ -91,5 +91,5 @@ boolean run_build_inside_docker(vars, branch){
 # Maintenance:
 When developing/changing the docker file/scripts that are used inside the docker container, execute the `/home/xap/docker/build.sh` script - this will build a new docker image that will be used in the build process.
 
-Termination (if the process is running in the background):
+#Termination:
 Execute `/home/xap/docker/stop.sh`.
