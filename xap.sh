@@ -15,6 +15,7 @@ mkdir -p -v ${SOURCES_DIR}/build_status
     	git clone $3 $1
     fi
     pushd $1
+    git checkout .
     if [ -z "$2" ] || [ "$2" == "master" ]
     then
        local BRANCH="origin/master"
@@ -33,7 +34,6 @@ mkdir -p -v ${SOURCES_DIR}/build_status
        git branch --set-upstream $2 ${BRANCH}
     fi
     echo "BRANCH= ${BRANCH}"
-    git checkout .
     git clean -fdx
     local head=`git rev-parse HEAD`
     git fetch

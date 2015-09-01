@@ -50,15 +50,25 @@ GS_ZIP_FILE_LOCAL=$(find ${LOCAL_BUILD_DIR} -name '*giga*.zip')
 echo "Extracting the build and tests zips and copying newman resources to ${WEB_FOLDER}/pending_build"
 pushd ${LOCAL_BUILD_DIR}
 # copy resources that are used for newman submitter to a folder which is served in http web server
-rm -rf ${WEB_FOLDER}/pending_build/*
-cp -f testsuite-1.5.zip ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build
-cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build
+mkdir -p ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+#rm -rf ${WEB_FOLDER}/pending_build/*
+rm -rf ${WEB_FOLDER}/pending_build/${GIT_BRANCH}/*
+cp -f testsuite-1.5.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f testsuite-1.5.zip ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build
+cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
+#cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build
 
 unzip testsuite-1.5.zip
 unzip ${GS_ZIP_FILE_LOCAL}
