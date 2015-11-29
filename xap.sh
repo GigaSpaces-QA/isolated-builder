@@ -73,6 +73,8 @@ check_git_changes ${SOURCES_DIR}/http-session ${GIT_BRANCH} git@github.com:Gigas
 check_git_changes ${SOURCES_DIR}/xap-session-sharing-manager-itests ${GIT_BRANCH} git@github.com:Gigaspaces/xap-session-sharing-manager-itests.git
 check_git_changes ${SOURCES_DIR}/mongo-datasource ${GIT_BRANCH} git@github.com:Gigaspaces/mongo-datasource.git
 check_git_changes ${SOURCES_DIR}/mongo-datasource-itests ${GIT_BRANCH} git@github.com:Gigaspaces/mongo-datasource-itests.git
+check_git_changes ${SOURCES_DIR}/xap-blobstore-rocksdb ${GIT_BRANCH} git@github.com:Gigaspaces/xap-blobstore-rocksdb.git
+check_git_changes ${SOURCES_DIR}/xap-ui-web ${GIT_BRANCH} git@github.com:Gigaspaces/xap-ui-web.git
 
 if [ "${SOURCES_CHANGED}" = false ]
 then 
@@ -124,10 +126,8 @@ mkdir -p ${SOURCES_DIR}/mule/mule-latest/target
 cp /opt/empty.zip ${SOURCES_DIR}/mule/mule-latest/target/mule-os-package.zip
 
 mkdir -p ${SOURCES_DIR}/examples
-#cp /opt/empty_build.xml ${SOURCES_DIR}/examples/build.xml
 
 mkdir -p ${SOURCES_DIR}/examples/release
-#cp /opt/empty.zip ${SOURCES_DIR}/examples/release/examples.zip
 
 #TODO add branch
 pushd ${SOURCES_DIR}/examples
@@ -144,7 +144,6 @@ cp -R xap-example-helloworld/examples/* examples/
 popd
 
 (cd ${SOURCES_DIR}/xap/tests && svn co svn://192.168.9.34/SVN/xap/trunk/quality/frameworks/TFRepository)
-(cd ${SOURCES_DIR} && svn co svn://192.168.9.34/SVN/xap/trunk/quality/frameworks/SGTest)
 
 cd ${SOURCES_DIR}/xap 
 SHA=`git rev-parse HEAD`; export SHA
@@ -179,15 +178,16 @@ cp -f ${SOURCES_DIR}/xap/tests/target/tgrid-tests-metadata.json ${SOURCES_DIR}/t
 mkdir -p ${SOURCES_DIR}/mongodb-tests-metadata
 cp -f ${SOURCES_DIR}/mongo-datasource-itests/itests/target/mongodb-tests.json ${SOURCES_DIR}/mongodb-tests-metadata/mongodb-tests.json
 
-pushd ${SOURCES_DIR}/SGTest
-mvn compile -Dmaven.repo.local=${SOURCES_DIR}/maven_repo_local
 mkdir -p ${SOURCES_DIR}/sgtest-metadata
-cp -f target/sgtest-tests.json ${SOURCES_DIR}/sgtest-metadata
+
+pushd ${SOURCES_DIR}/xap/sg-tests
+cp -f target/SGTest-sources.zip ${SOURCES_DIR}/sgtest-metadata
+#when moving sgtest to git uncomment the below line and delete the above block (SGTest from svn + checking it out from svn)
+cp -f target/sgtest-tests.json ${SOURCES_DIR}/sgtest-metadata 
 popd
 
 echo "Clean temporary TFRepository & SGTest"
 rm -rf ${SOURCES_DIR}/xap/tests/TFRepository
-rm -rf ${SOURCES_DIR}/SGTest
 
 echo "Publishing newman artifacts"
 pushd ${SOURCES_DIR}/xap/newman-artifacts

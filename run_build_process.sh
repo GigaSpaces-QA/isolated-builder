@@ -15,7 +15,7 @@ then
 else
   COUNT=`cat ${COUNTER_FILE}`
   echo "Build failed! check the build log in ${LOGS_DIR}/${COUNT}/build.log for details"
-  echo -e "CI Build Failed, check your commits\n\nBuild Log:\n`cat ${LOGS_DIR}/${COUNT}/build.log`" | mail -s "CI Failure" "${RECIPIENTS}"
+  echo -e "CI Build Failed, check your commits\n\nBuild Log:\n`cat ${LOGS_DIR}/${COUNT}/build.log`" | mail -s "CI Failure" -a "From: xap@gigaspaces.com" "${RECIPIENTS}"
   exit 1
 fi
 
@@ -46,29 +46,47 @@ GS_ZIP_FILE=$(find ${SOURCES_DIR}/xap/core/releases/build_${TGRID_BUILD_NUMBER}/
 cp -p ${GS_ZIP_FILE} ${LOCAL_BUILD_DIR}
 
 GS_ZIP_FILE_LOCAL=$(find ${LOCAL_BUILD_DIR} -name '*giga*.zip')
+# need to rewmove local !!!
+GS_ZIP_FILE_MULTI_BUILDS=$(find ${GS_ZIP_FILE} -name '*giga*.zip')
 
 echo "Extracting the build and tests zips and copying newman resources to ${WEB_FOLDER}/pending_build"
 pushd ${LOCAL_BUILD_DIR}
 # copy resources that are used for newman submitter to a folder which is served in http web server
 mkdir -p ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-#rm -rf ${WEB_FOLDER}/pending_build/*
-rm -rf ${WEB_FOLDER}/pending_build/${GIT_BRANCH}/*
+
+# change - currently testing - date : 18.10.15
+MULTI_WEB_FOLDER=${PUBLISH_BUILDS_FOLDER}/${GIT_BRANCH}
+rm -rf ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+echo "Creating build in ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}"
+
+mkdir -p ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+
+cp -f ${SOURCES_DIR}/xap/core/releases/build_${TGRID_BUILD_NUMBER}/testsuite-1.5.zip ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/metadata/metadata.txt ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${GS_ZIP_FILE_MULTI_BUILDS} ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/sgtest-metadata/SGTest-sources.zip ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+
+${PUBLISH_BUILDS_FOLDER}/publish_build_in_newman.sh ${GIT_BRANCH} ${TGRID_BUILD_NUMBER}
+
+echo "Finish creating build in ${GIT_BRANCH}/${TGRID_BUILD_NUMBER}."
+echo "start running script: ${PUBLISH_BUILDS_FOLDER}/publish_build_in_newman.sh ${GIT_BRANCH} ${TGRID_BUILD_NUMBER} !"
+# end testing change
+
+rm -rf ${WEB_FOLDER}/pending_build/${GIT_BRANCH}/* 
 cp -f testsuite-1.5.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f testsuite-1.5.zip ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build
-cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build
-cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build
+cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+cp -f ${SOURCES_DIR}/sgtest-metadata/SGTest-sources.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+cp -f  ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
 cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-#cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build
 
 unzip testsuite-1.5.zip
 unzip ${GS_ZIP_FILE_LOCAL}
