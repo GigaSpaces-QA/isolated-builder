@@ -27,73 +27,36 @@ else
     exit 1
 fi
 
-echo "BUILD_NUMBER=${TGRID_BUILD_NUMBER}"
-
-LOCAL_BUILD_DIR=${TESTING_GRID_HOME}/local-builds/${GIT_BRANCH}/${TGRID_BUILD_NUMBER}
-
-echo "Removing local build directory if exists"
-
-rm -rf ${LOCAL_BUILD_DIR}
-
-echo "Creating new dir for local build in ${LOCAL_BUILD_DIR}"
-
-mkdir -p ${LOCAL_BUILD_DIR}
-
-cp ${SOURCES_DIR}/xap/core/releases/build_${TGRID_BUILD_NUMBER}/testsuite-1.5.zip ${LOCAL_BUILD_DIR}
-
 GS_ZIP_FILE=$(find ${SOURCES_DIR}/xap/core/releases/build_${TGRID_BUILD_NUMBER}/xap-premium/1.5 -name '*.zip')
+echo "GS_ZIP_FILE=${GS_ZIP_FILE}"
 
-cp -p ${GS_ZIP_FILE} ${LOCAL_BUILD_DIR}
-
-GS_ZIP_FILE_LOCAL=$(find ${LOCAL_BUILD_DIR} -name '*giga*.zip')
-# need to rewmove local !!!
 GS_ZIP_FILE_MULTI_BUILDS=$(find ${GS_ZIP_FILE} -name '*giga*.zip')
+echo "GS_ZIP_FILE_MULTI_BUILDS=${GS_ZIP_FILE_MULTI_BUILDS}"
 
-echo "Extracting the build and tests zips and copying newman resources to ${WEB_FOLDER}/pending_build"
-pushd ${LOCAL_BUILD_DIR}
-# copy resources that are used for newman submitter to a folder which is served in http web server
-mkdir -p ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
+PARENT_BUILDS_DIR_NAME=builds
+MULTI_BUILDS_WEB_FOLDER=${PUBLISH_BUILDS_FOLDER}/${PARENT_BUILDS_DIR_NAME}
+CURRENT_BUILD_FOLDER=${MULTI_BUILDS_WEB_FOLDER}/${GIT_BRANCH}/${TGRID_BUILD_NUMBER}
 
-# change - currently testing - date : 18.10.15
-MULTI_WEB_FOLDER=${PUBLISH_BUILDS_FOLDER}/${GIT_BRANCH}
-rm -rf ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-echo "Creating build in ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}"
+rm -rf ${CURRENT_BUILD_FOLDER}/${TGRID_BUILD_NUMBER}
 
-mkdir -p ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+echo "Creating build in ${CURRENT_BUILD_FOLDER}"
 
-cp -f ${SOURCES_DIR}/xap/core/releases/build_${TGRID_BUILD_NUMBER}/testsuite-1.5.zip ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/metadata/metadata.txt ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${GS_ZIP_FILE_MULTI_BUILDS} ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/sgtest-metadata/SGTest-sources.zip ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
-cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${MULTI_WEB_FOLDER}/${TGRID_BUILD_NUMBER}
+mkdir -p ${CURRENT_BUILD_FOLDER}
 
-${PUBLISH_BUILDS_FOLDER}/publish_build_in_newman.sh ${GIT_BRANCH} ${TGRID_BUILD_NUMBER}
+cp -f ${SOURCES_DIR}/xap/core/releases/build_${TGRID_BUILD_NUMBER}/testsuite-1.5.zip ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/metadata/metadata.txt ${CURRENT_BUILD_FOLDER}
+cp -f ${GS_ZIP_FILE_MULTI_BUILDS} ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/sgtest-metadata/SGTest-sources.zip ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/http-session-tests-metadata/*.json ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${CURRENT_BUILD_FOLDER}
+cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${CURRENT_BUILD_FOLDER}
 
-echo "Finish creating build in ${GIT_BRANCH}/${TGRID_BUILD_NUMBER}."
-echo "start running script: ${PUBLISH_BUILDS_FOLDER}/publish_build_in_newman.sh ${GIT_BRANCH} ${TGRID_BUILD_NUMBER} !"
-# end testing change
+echo "Finish creating build in ${CURRENT_BUILD_FOLDER}."
+echo "MULTI_BUILDS_WEB_FOLDER=${MULTI_BUILDS_WEB_FOLDER}"
+echo "GIT_BRANCH=${GIT_BRANCH}"
+echo "TGRID_BUILD_NUMBER=${TGRID_BUILD_NUMBER}"
+echo "start running script: ${PUBLISH_BUILDS_FOLDER}/publish_build_in_newman.sh ${GIT_BRANCH} ${TGRID_BUILD_NUMBER}. log written to: ${PUBLISH_BUILDS_FOLDER}/publish.log "
 
-rm -rf ${WEB_FOLDER}/pending_build/${GIT_BRANCH}/* 
-cp -f testsuite-1.5.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-cp -f ${SOURCES_DIR}/newman-artifacts/newman-artifacts.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f ${SOURCES_DIR}/metadata/metadata.txt ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f ${GS_ZIP_FILE_LOCAL} ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f ${SOURCES_DIR}/sgtest-metadata/sgtest-tests.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f ${SOURCES_DIR}/sgtest-metadata/SGTest-sources.zip ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f  ${SOURCES_DIR}/http-session-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f ${SOURCES_DIR}/tgrid-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH} 
-cp -f ${SOURCES_DIR}/mongodb-tests-metadata/*.json ${WEB_FOLDER}/pending_build/${GIT_BRANCH}
-
-unzip testsuite-1.5.zip
-unzip ${GS_ZIP_FILE_LOCAL}
-
-echo "Cleaning the zips"
-rm testsuite-1.5.zip
-rm ${GS_ZIP_FILE_LOCAL}
- 
-
-
+${PUBLISH_BUILDS_FOLDER}/publish_build_in_newman.sh ${GIT_BRANCH} ${TGRID_BUILD_NUMBER} &> ${PUBLISH_BUILDS_FOLDER}/publish.log
